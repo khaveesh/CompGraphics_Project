@@ -1,6 +1,9 @@
 // import Scene from "./Scene.js";
+import Avatar from "./Avatar.js";
+import Drone from "./Drone.js";
 import * as THREE from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
+import { Mesh } from "three";
 
 export default class Application{
 
@@ -8,12 +11,21 @@ export default class Application{
 
 
         this.scene = new THREE.Scene();
+        this.avatar = new Avatar();
+        this.drone = new Drone();
+        this.debug_camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        
+        this.objects = []
+        this.players = [this.avatar, this.drone];
+        this.active_player = 1;
 
         this.initialize_scene();
-        
-        this.initialize_cameras();
 
-        this.moveForward = false;
+        const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+        this.scene.add( light );
+
+        
+        this.debug_camera.position.z = 10;
 
 
         this.renderer = new THREE.WebGLRenderer();
@@ -32,11 +44,9 @@ export default class Application{
     animate(){
 
 
-        this.renderer.render( this.scene, this.camera[this.active_camera] );
+        this.renderer.render( this.scene, this.players[this.active_player].camera);
 
-        if(this.moveForward){
-            this.controls[0].moveForward(0.05);
-        }
+        this.players[this.active_player].move();
 
         requestAnimationFrame( this.animate.bind(this));
 
@@ -44,13 +54,12 @@ export default class Application{
 
     keypress_handler(event){
 
-        if(event.key === "1"){
-            this.active_camera = 1;
-            // this.controls[0].unlock();
-        }
-        else if(event.key === "0"){
-            this.active_camera = 0;
-            this.controls[0].lock(); 
+        if(event.key === "c"){
+
+            this.players[this.active_player].deactivate();
+            this.active_player = 1 - this.active_player;
+            this.players[this.active_player].activate();
+
         }
         
 
@@ -58,16 +67,16 @@ export default class Application{
 
     keydown_handler(event){
         
-        if(event.key == 'w'){
-            this.moveForward = true
+        if(["w","a","s","d","q","e"].includes(event.key)){
+            this.players[this.active_player].keydown(event.key);
         }
 
     }
 
     keyup_handler(event){
 
-        if(event.key == 'w'){
-            this.moveForward = false
+        if(["w","a","s","d","q","e"].includes(event.key)){
+            this.players[this.active_player].keyup(event.key);
         }
 
     }
@@ -89,15 +98,17 @@ export default class Application{
     initialize_scene(){
 
         const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        const cube1 = new THREE.Mesh( geometry, material );
-        this.scene.add( cube1 );
-        const cube2 = new THREE.Mesh( geometry, material );
-        this.scene.add(cube2);
-
-        cube2.position.x += 5;
-        this.objects = [cube1, cube2];
+        const material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
         
+        this.objects.push(new Mesh(geometry, material));
+        this.objects.push(new Mesh(geometry, material));
+
+        this.objects[1].position.x += 5;
+
+        this.objects.forEach( (x) =>this.scene.add(x) );
+        this.players.forEach( (x) =>this.scene.add(x.mesh) );
+
+
     }
 
 }

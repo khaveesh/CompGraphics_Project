@@ -1,4 +1,4 @@
-one time setup:
+one time setup
 1)sudo apt install npm (if you dont have npm already)
 2) npm install
 
