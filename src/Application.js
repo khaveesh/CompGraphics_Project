@@ -1,6 +1,7 @@
-// import Scene from "./Scene.js";
+import NPC from "./NPC.js";
 import Avatar from "./Avatar.js";
 import Drone from "./Drone.js";
+import Lamppost from "./Objects/Lamppost.js";
 import * as THREE from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { Mesh } from "three";
@@ -11,7 +12,7 @@ export default class Application{
 
 
         this.scene = new THREE.Scene();
-        this.avatar = new Avatar();
+        this.avatar = new Avatar(this.scene);
         this.drone = new Drone();
         this.debug_camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
         
@@ -97,15 +98,30 @@ export default class Application{
 
     initialize_scene(){
 
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
+        const box_geometry = new THREE.BoxGeometry();
+        const green_phong_material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
+
+        const floor_geometry = new THREE.PlaneGeometry(100,100);
+        const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        this.objects.push(new Mesh(geometry, material));
-        this.objects.push(new Mesh(geometry, material));
+        this.objects.push(new NPC(box_geometry, green_phong_material, [0,0.5,0]));
+        this.objects.push(new NPC(box_geometry, white_phong_material, [0,0.5,5]));
 
-        this.objects[1].position.x += 5;
+        this.objects.push(new NPC(floor_geometry, white_phong_material, [0,0,0], [-Math.PI/2,0,0]));
+        
+        
+        this.objects.push(new Lamppost([10,1.5,10]));
+        this.objects.push(new Lamppost([30,1.5,30]));
+        this.objects.push(new Lamppost([50,1.5,50]));
+        this.objects.push(new Lamppost([-10,1.5,-10]));
+        this.objects.push(new Lamppost([-30,1.5,-30]));
+        this.objects.push(new Lamppost([-50,1.5,-50]));
 
-        this.objects.forEach( (x) =>this.scene.add(x) );
+
+
+
+
+        this.objects.forEach( (x) =>this.scene.add(x.mesh) );
         this.players.forEach( (x) =>this.scene.add(x.mesh) );
 
 

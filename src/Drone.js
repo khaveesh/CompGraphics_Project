@@ -12,7 +12,10 @@ export default class Drone{
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
+        this.mesh.position.y += 0.5;
+
         this.mesh.add(this.camera);
+        
         this.mesh.position.z = 3;
         this.speed = 0.05;
 
