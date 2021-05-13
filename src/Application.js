@@ -71,6 +71,10 @@ export default class Application{
         if(["w","a","s","d","q","e"].includes(event.key)){
             this.players[this.active_player].keydown(event.key);
         }
+        if(event.key == "t"){
+            this.avatar.toggle_texture();
+            this.objects.forEach((x) => x.toggle_texture())
+        }
 
     }
 
@@ -104,10 +108,10 @@ export default class Application{
         const floor_geometry = new THREE.PlaneGeometry(100,100);
         const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        this.objects.push(new NPC(box_geometry, green_phong_material, [0,0.5,0]));
-        this.objects.push(new NPC(box_geometry, white_phong_material, [0,0.5,5]));
+        this.objects.push(new NPC(box_geometry, [0,0.5,0]));
+        this.objects.push(new NPC(box_geometry, [0,0.5,5]));
 
-        this.objects.push(new NPC(floor_geometry, white_phong_material, [0,0,0], [-Math.PI/2,0,0]));
+        this.objects.push(new NPC(floor_geometry, [0,0,0], [-Math.PI/2,0,0]));
         
         
         this.objects.push(new Lamppost([10,1.5,10]));

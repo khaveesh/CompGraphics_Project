@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Texture from "./Texture.js";
 
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 
@@ -8,8 +9,9 @@ export default class Avatar{
     constructor(scene){
 
         this.geometry = new THREE.BoxGeometry();
+        this.texture = new Texture();
         this.material = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.mesh = new THREE.Mesh(this.geometry, this.texture.material[0]);
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
         this.control = new PointerLockControls(this.mesh, document.body);
         this.light = new THREE.SpotLight(0xffffff);
@@ -86,6 +88,10 @@ export default class Avatar{
 
         }
 
+    }
+
+    toggle_texture(){
+        this.mesh.material = this.texture.toggle();
     }
 
 }

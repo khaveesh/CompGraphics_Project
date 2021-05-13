@@ -6,7 +6,6 @@ export default class Lamppost extends NPC{
     constructor(position = [0,0,0]){
 
         const geometry = new THREE.BoxGeometry(0.1,3,0.1);
-        const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
         
         const lights = [];
 
@@ -24,7 +23,7 @@ export default class Lamppost extends NPC{
         lights[2].position.x = - 1;
         lights[3].position.z = - 1;
 
-        super(geometry, material, position, [0,0,0], lights);
+        super(geometry, position, [0,0,0], lights, "white_concrete.jpg");
 
         this.light = lights;
     }
