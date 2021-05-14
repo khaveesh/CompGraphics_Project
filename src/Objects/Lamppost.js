@@ -3,7 +3,7 @@ import NPC from "../NPC.js";
 
 export default class Lamppost extends NPC{
 
-    constructor(position = [0,0,0]){
+    constructor(scene,position = [0,0,0]){
 
         const geometry = new THREE.BoxGeometry(0.1,3,0.1);
         
@@ -23,7 +23,7 @@ export default class Lamppost extends NPC{
         lights[2].position.x = - 1;
         lights[3].position.z = - 1;
 
-        super(geometry, position, [0,0,0], lights, "white_concrete.jpg");
+        super(scene,"pole.obj", position, [Math.PI/2,0,0], lights, "white_concrete.jpg");
 
         this.light = lights;
     }

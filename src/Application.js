@@ -73,6 +73,7 @@ export default class Application{
         }
         if(event.key == "t"){
             this.avatar.toggle_texture();
+            this.avatar.map_spherical();
             this.objects.forEach((x) => x.toggle_texture())
         }
 
@@ -86,19 +87,6 @@ export default class Application{
 
     }
 
-    initialize_cameras(){
-
-        this.camera = [new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ), new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )];
-        this.camera[0].position.z = 0;
-        this.camera[1].position.z = 10;
-
-        this.active_camera = 0;
-        
-        this.controls = []
-        this.controls.push(new PointerLockControls(this.objects[0], document.body));
-        this.objects[0].add(this.camera[0])
-
-    }
 
     initialize_scene(){
 
@@ -108,25 +96,22 @@ export default class Application{
         const floor_geometry = new THREE.PlaneGeometry(100,100);
         const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        this.objects.push(new NPC(box_geometry, [0,0.5,0]));
-        this.objects.push(new NPC(box_geometry, [0,0.5,5]));
+        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
+        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
 
-        this.objects.push(new NPC(floor_geometry, [0,0,0], [-Math.PI/2,0,0]));
+        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0]));
         
         
-        this.objects.push(new Lamppost([10,1.5,10]));
-        this.objects.push(new Lamppost([30,1.5,30]));
-        this.objects.push(new Lamppost([50,1.5,50]));
-        this.objects.push(new Lamppost([-10,1.5,-10]));
-        this.objects.push(new Lamppost([-30,1.5,-30]));
-        this.objects.push(new Lamppost([-50,1.5,-50]));
+        this.objects.push(new Lamppost(this.scene, [10,1.5,10]));
+        this.objects.push(new Lamppost(this.scene, [30,1.5,30]));
+        this.objects.push(new Lamppost(this.scene, [50,1.5,50]));
+        this.objects.push(new Lamppost(this.scene, [-10,1.5,-10]));
+        this.objects.push(new Lamppost(this.scene, [-30,1.5,-30]));
+        this.objects.push(new Lamppost(this.scene, [-50,1.5,-50]));
 
 
 
-
-
-        this.objects.forEach( (x) =>this.scene.add(x.mesh) );
-        this.players.forEach( (x) =>this.scene.add(x.mesh) );
+        this.scene.add(this.drone.mesh);
 
 
     }
