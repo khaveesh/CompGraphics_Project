@@ -73,8 +73,11 @@ export default class Application{
         }
         if(event.key == "t"){
             this.avatar.toggle_texture();
-            this.avatar.map_spherical();
-            this.objects.forEach((x) => x.toggle_texture())
+            this.objects.forEach((x) => x.toggle_texture());
+        }
+        if(event.key == "m"){
+            this.avatar.toggle_map();
+            this.objects.forEach((x) => x.toggle_map());
         }
 
     }
