@@ -62,15 +62,6 @@ export default class Application{
             this.players[this.active_player].activate();
 
         }
-        
-
-    }
-
-    keydown_handler(event){
-        
-        if(["w","a","s","d","q","e"].includes(event.key)){
-            this.players[this.active_player].keydown(event.key);
-        }
         if(event.key == "t"){
             this.avatar.toggle_texture();
             this.objects.forEach((x) => x.toggle_texture());
@@ -79,6 +70,19 @@ export default class Application{
             this.avatar.toggle_map();
             this.objects.forEach((x) => x.toggle_map());
         }
+        if(event.key == " "){
+            this.avatar.jump();
+        }
+        
+        
+    }
+
+    keydown_handler(event){
+        
+        if(["w","a","s","d","q","e"].includes(event.key)){
+            this.players[this.active_player].keydown(event.key);
+        }
+        
 
     }
 
@@ -102,7 +106,7 @@ export default class Application{
         this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
         this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
 
-        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0]));
+        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],[],"ground.jpg"));
         
         
         this.objects.push(new Lamppost(this.scene, [10,1.5,10]));

@@ -11,7 +11,7 @@ export default class Avatar{
 
     constructor(scene){
 
-        const mesh = require("./Resources/Meshes/smoothsphere.obj");
+        const mesh = require("./Resources/Meshes/cube.obj");
         const loader = new OBJLoader();
         loader.load(mesh.default,  (object) => {
 
@@ -42,6 +42,8 @@ export default class Avatar{
         this.map = 0;
         
         this.speed = 0.05;
+        this.y_velocity = 0.5;
+        
     }
 
     initialize_mesh(){
@@ -55,8 +57,10 @@ export default class Avatar{
         
         this.mesh.position.z = 10;
         this.map_simple();
-
+        this.floor = this.mesh.position.y;
     }
+
+
 
     toggle_map(){
 
@@ -250,6 +254,29 @@ export default class Avatar{
 
         }
 
+        if(this.mesh.position.y > this.floor){
+            this.mesh.position.y += this.y_velocity;
+            if(this.mesh.position.y < this.floor){
+                this.mesh.position.y = this.floor;
+                this.y_velocity = 0;
+                return;
+            }
+            this.y_velocity -= 0.03;
+        }
+        else{
+            this.mesh.position.y = this.floor;
+            this.y_velocity = 0;
+        }
+
+    }
+
+    jump(){
+
+        if(this.active && this.y_velocity == 0){
+            this.y_velocity = 0.5;
+            this.mesh.position.y = this.floor + 0.01;
+        }
+        
     }
 
     toggle_texture(){
