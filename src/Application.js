@@ -41,7 +41,7 @@ export default class Application{
 
 
     }
-
+/*
 pointsPath ()
 {
 	const Path = new THREE.CurvePath();
@@ -294,7 +294,7 @@ animate()
 		Path.add(thirdLine);
 		Path.add(bezierLine);
 		
-		this.scene.add(Path);
+		// this.scene.add(Path);
 		const p_material = new THREE.LineBasicMaterial({
 		color: 0xffffff
 		});
