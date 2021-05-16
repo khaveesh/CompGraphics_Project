@@ -11,7 +11,7 @@ export default class Avatar{
 
     constructor(scene){
 
-        const mesh = require("./Resources/Meshes/cube.obj");
+        const mesh = require("./Resources/Meshes/smoothsphere.obj");
         const loader = new OBJLoader();
         loader.load(mesh.default,  (object) => {
 
@@ -21,7 +21,7 @@ export default class Avatar{
             }
         );
         
-        this.texture = new Texture();
+        this.texture = new Texture("world.jpg");
 
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
         this.light = new THREE.SpotLight(0xffffff);
@@ -38,6 +38,8 @@ export default class Avatar{
         this.camera.add(this.light);
         this.light.position.set(0,0,1);
         this.light.target = this.camera;
+
+        this.map = 0;
         
         this.speed = 0.05;
     }
@@ -56,10 +58,24 @@ export default class Avatar{
 
     }
 
+    toggle_map(){
+
+        if(this.map == 0){
+            this.map_spherical();
+            this.map = 1;
+        }
+        else{
+            this.map_simple();
+            this.map = 0;
+        }
+
+    }
+
     map_spherical(){
         
         var geometry = this.geometry;
-        var uv = [];
+        var u_array = [];
+        var v_array = [];
         geometry.computeBoundingSphere();
         const radius = geometry.boundingSphere.radius;
         const centre_x = geometry.boundingSphere.center.x;
@@ -71,12 +87,28 @@ export default class Avatar{
             if(geometry.attributes.position.array[3*i + 1] - centre_y != 0){
                 start_x = geometry.attributes.position.array[3*i] - centre_x;
                 start_z = geometry.attributes.position.array[3*i + 2] - centre_z;
+                
+                break;
             }
         }
 
+        var u_start;
+        const c_radius = Math.sqrt( start_x*start_x + start_z*start_z );
         
-        const start_vector = new THREE.Vector2(start_x, start_z);
-        const offset_angle = start_vector.angle();
+        if( start_x >= 0 && start_z >= 0){
+            u_start = Math.asin(start_z/c_radius)/(2 * Math.PI);
+        }
+        else if( start_x < 0 && start_z >= 0){
+            u_start = Math.asin(-(start_x)/c_radius)/(2 * Math.PI) + 0.25;
+        }
+        else if(start_x < 0 && start_z < 0){
+            u_start = Math.asin(-(start_z)/c_radius)/(2 * Math.PI) + 0.5;
+        }
+        else if(start_x >= 0 && start_z < 0){
+            u_start = Math.asin(start_x/c_radius)/(2 * Math.PI) + 0.75;
+        }
+        u_start = Math.round(u_start * 1000)/1000;
+
 
         for(var i =0; i < geometry.attributes.position.count; i++){
 
@@ -84,32 +116,68 @@ export default class Avatar{
             var y = geometry.attributes.position.array[3*i + 1] - centre_y;
             var z = geometry.attributes.position.array[3*i + 2] - centre_z;
 
-            var temp_vector = new THREE.Vector2(x,z);
-            temp_vector.rotateAround(new THREE.Vector2(0,0), -offset_angle);
-            x = temp_vector.x;
-            z = temp_vector.y;
-
-            var v = (y/(2 * radius)) + 0.5;
+            var v = Math.asin(y/radius)/(Math.PI) + 0.5;
             var u = 0;
             const c_radius = Math.sqrt( x*x + z*z );
             
-            if(x >= start_x && z >= start_z){
-                u = (z/c_radius)/4;
+            if(x >= 0 && z >= 0){
+                u = Math.asin((z/c_radius))/(2*Math.PI);
             }
-            else if(x < start_x && z >= start_z){
-                u = (-x/c_radius)/4 + 0.25;
+            else if(x < 0 && z >= 0){
+                u = Math.asin((-x/c_radius))/(2*Math.PI) + 0.25;
             }
-            else if(x < start_x && z < start_z){
-                u = (-z/c_radius)/4 + 0.5;
+            else if(x < 0 && z < 0){
+                u = Math.asin((-z/c_radius))/(2*Math.PI) + 0.5;
             }
-            else if(x >= start_x && z < start_z){
-                u = (x/c_radius)/4 + 0.75;
+            else if(x >= 0 && z < 0){
+                u = Math.asin((x/c_radius))/(2*Math.PI) + 0.75;
+            }
+            
+            u = Math.round(u * 1000)/1000;    
+
+            u = u - u_start;
+
+            if(u < 0){
+                u += 1;
             }
 
-            uv.push(1-u, v);
+
+            u_array.push(u);
+            v_array.push(v);
 
 
 
+        }
+        
+        for(var i = 0; i < u_array.length; i++){
+
+            if(u_array[i] == 0){
+                if(i % 3 == 0){
+                    if(u_array[i+1] > 0.5){
+                        u_array[i] = 1;
+                    }
+                    else if(u_array[i+1] == 0 && u_array[i+2] > 0.5){
+                        u_array[i] = 1;
+                    }
+                }
+                else if(i % 3 == 1){
+                    if(u_array[i-1] > 0.5){
+                        u_array[i] = 1;
+                    }
+                }
+                else if(i%3 == 2){
+                    if(u_array[i-1] > 0.5){
+                        u_array[i] = 1;
+                    }
+                }
+            }
+
+        }
+
+        var uv = []
+
+        for(var i = 0; i < u_array.length; i++){
+            uv.push(u_array[i], v_array[i]);
         }
 
         const uv_attribute = new BufferAttribute(new Float32Array(uv), 2);
