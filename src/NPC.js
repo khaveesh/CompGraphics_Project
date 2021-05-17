@@ -5,7 +5,7 @@ import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 
 export default class NPC{
 
-    constructor(parent , obj_file = "cube.obj", position = [0,0,0], rotate = [0,0,0], children = [], texture_file1 = "wall1.jpg", texture_file2 = "white_concrete.jpg"){
+    constructor(parent , obj_file = "cube.obj", position = [0,0,0], rotate = [0,0,0], scale = 1, children = [], texture_file1 = "wall1.jpg", texture_file2 = "white_concrete.jpg"){
 
         const loader = new OBJLoader();
         console.log(obj_file);
@@ -14,7 +14,7 @@ export default class NPC{
 
                 this.geometry = object.children[0].geometry;
                 console.log(rotate);
-                this.initialize_mesh( position, rotate);
+                this.initialize_mesh( position, rotate, scale);
                 parent.add(this.mesh);
             }
         );
@@ -27,7 +27,7 @@ export default class NPC{
 
     }
 
-    initialize_mesh(position, rotate){
+    initialize_mesh(position, rotate, scale){
         this.mesh = new THREE.Mesh(this.geometry, this.texture.material[0]);
         
         this.mesh.position.x += position[0];
@@ -37,6 +37,8 @@ export default class NPC{
         this.mesh.rotateX(rotate[0]);
         this.mesh.rotateY(rotate[1]);
         this.mesh.rotateZ(rotate[2]);
+
+        this.mesh.scale.set(scale,scale,scale);
         this.map_simple();
         this.children.forEach((x) => this.mesh.add(x));
 

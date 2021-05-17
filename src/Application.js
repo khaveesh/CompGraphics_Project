@@ -2,6 +2,7 @@ import NPC from "./NPC.js";
 import Avatar from "./Avatar.js";
 import Drone from "./Drone.js";
 import Lamppost from "./Objects/Lamppost.js";
+import Leader from "./Leader.js";
 import * as THREE from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { Mesh } from "three";
@@ -41,140 +42,15 @@ export default class Application{
 
 
     }
-/*
-pointsPath ()
-{
-	const Path = new THREE.CurvePath();
-    const firstLine = new THREE.LineCurve3(
-		new THREE.Vector3( 1, 0, 0 ),
-		new THREE.Vector3( -1, 0, 0 )
-    );
-	const secondLine = new THREE.LineCurve3(
-		new THREE.Vector3(-1, 0, 0 ),
-		new THREE.Vector3( -1, 1, 0 )
-    );
-  
-	const thirdLine = new THREE.LineCurve3(
-		new THREE.Vector3( -1, 1, 0 ),
-		new THREE.Vector3(-1, 1, 1 ),
-    );
-  
 
-	const bezierLine = new THREE.CubicBezierCurve3(
-		new THREE.Vector3( -1, 1, 1 ),
-		new THREE.Vector3( -0.5, 1.5, 0 ),
-		new THREE.Vector3( 2.0, 1.5, 0 ),
-		new THREE.Vector3( -1, 0, 1 )
-	);
-	
-    Path.add(firstLine);
-    Path.add(secondLine);
-    Path.add(thirdLine);
-    Path.add(bezierLine);
-    
-    let displacement = 0;
-	var axis = new THREE.Vector3();
-	var up = new THREE.Vector3( 0, 1, 0 );
-
-	var curr_pos = Path.getPoint(displacement);
-	var tangent = Path.getTangent(displacement);
-	
-	axis.crossVectors(up, tangent).normalize();	
-	var radians = Math.acos(up.dot(tangent));
-	
-	var update = () => {
-		displacement +=0.001;
-		if (displacement> 1)
-		{
-			displacement = 0;
-		}
-		curr_pos = Path.getPoint(displacement);
-		tangent = Path.getTangent(displacement);
-		axis.crossVectors(up, tangent).normalize();
-		radians = Math.acos(up.dot(tangent));
-		
-	};
-	var get_curr_pos = () => {
-		return curr_pos;
-	};
-	var get_axis = () => {
-		return axis;
-	};
-	var get_radians = () => {
-		return radians;
-	};
-	var get_displacement = () => {
-		return displacement;
-	};
-}
-/*
-var path = new THREE.LineCurve3(
-		new THREE.Vector3( 1, 0, 0 ),
-		new THREE.Vector3( -1, 0, 0 )
-    );
-*/
-/*
-let displacement = 0;
-var axis = new THREE.Vector3();
-var up = new THREE.Vector3( 0, 1, 0 );
-*/
 animate()
 {	
-// 	const pPath = this.pointsPath()
-	const Path = new THREE.CurvePath();
-	Path.name = "Path";
-	const firstLine = new THREE.LineCurve3(
-		new THREE.Vector3( 1, 0, 0 ),
-		new THREE.Vector3( -1, 0, 0 )
-	);
-	const secondLine = new THREE.LineCurve3(
-		new THREE.Vector3(-1, 0, 0 ),
-		new THREE.Vector3( -1, 1, 0 )
-	);
-  
-	const thirdLine = new THREE.LineCurve3(
-		new THREE.Vector3( -1, 1, 0 ),
-		new THREE.Vector3(-1, 1, 1 ),
-	);
-  
 
-	const bezierLine = new THREE.CubicBezierCurve3(
-		new THREE.Vector3( -1, 1, 1 ),
-		new THREE.Vector3( -0.5, 1.5, 0 ),
-		new THREE.Vector3( 2.0, 1.5, 0 ),
-		new THREE.Vector3( -1, 0, 1 )
-	);
-	
-	Path.add(firstLine);
-	Path.add(secondLine);
-	Path.add(thirdLine);
-	Path.add(bezierLine);
-
-	var cube1 = this.scene.getObjectByName("lead_cube");
-	cube1.position.copy(Path.getPoint(this.displacement));
-	var axis = new THREE.Vector3();
-	var up = new THREE.Vector3( 0, 0, 1 );
-	var tangent = Path.getTangent(this.displacement);
-	
-	axis.crossVectors(up, tangent).normalize();	
-	
-	const radians = Math.acos(up.dot(tangent));
-	
-	cube1.quaternion.setFromAxisAngle(axis, radians);
-	// const path = new THREE.Path();
-	// cube1.position.copy(path.getPoint(displacement));
-	console.log(this.displacement);
 		
 	this.renderer.render( this.scene, this.players[this.active_player].camera);
 
 	this.players[this.active_player].move();
-	
-	// pPath.update();
-	this.displacement +=0.001;
-	if (this.displacement> 1)
-	{
-		this.displacement = 0;
-	}
+	this.leader.move();
 
     requestAnimationFrame( this.animate.bind(this));
 
@@ -231,10 +107,10 @@ animate()
         const floor_geometry = new THREE.PlaneGeometry(100,100);
         const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
-        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
+        // this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
+        // this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
 
-        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],[],"ground.jpg"));
+        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"ground.jpg"));
         
         
         this.objects.push(new Lamppost(this.scene, [10,1.5,10]));
@@ -247,30 +123,9 @@ animate()
 
 
         this.scene.add(this.drone.mesh);
-		
-		var geometry1 = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
-		var geometry2 = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
-		var geometry3 = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
-		var material1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-		var material2 = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-		var material3 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-		var cube1 = new THREE.Mesh( geometry1, material1 );
-		var cube2 = new THREE.Mesh( geometry2, material2 );
-		var cube3 = new THREE.Mesh( geometry3, material3 );
-		var cubes = [cube1, cube2, cube3];
 
-		var i;
-		for(i=1; i<3; ++i)
-		{
-			cubes[i-1].add(cubes[i]);
-		/*   cubes[i].position.x = cubes[i-1].position.x + 2; */
-		}
-		cubes[1].position.x = cubes[0].position.x + 0.1;
-		cubes[2].position.x = cubes[1].position.x + 0;
-
-		cube1.name = "lead_cube";
+		this.leader = new Leader(this.scene);
 		
-		this.scene.add(cube1);
 
 		const Path = new THREE.CurvePath();
 		Path.name = "Path";
@@ -301,7 +156,7 @@ animate()
 		Path.add(thirdLine);
 		Path.add(bezierLine);
 		
-		// this.scene.add(Path);
+		
 		const p_material = new THREE.LineBasicMaterial({
 		color: 0xffffff
 		});

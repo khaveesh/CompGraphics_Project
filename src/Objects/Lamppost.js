@@ -23,7 +23,7 @@ export default class Lamppost extends NPC{
         lights[2].position.x = - 1;
         lights[3].position.z = - 1;
 
-        super(scene,"pole.obj", position, [Math.PI/2,0,0], lights, "white_concrete.jpg");
+        super(scene,"pole.obj", position, [Math.PI/2,0,0],1, lights, "white_concrete.jpg");
 
         this.light = lights;
     }
