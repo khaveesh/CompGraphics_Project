@@ -31,6 +31,7 @@ export default class Avatar{
         this.light.decay = 2;
         
         this.active = false;
+        this.attached = false;
 
         this.fb_motion = 0; //front back axis: front=1 back = -1
         this.lr_motion = 0; //left right axis: right=1 left = -1
@@ -247,7 +248,7 @@ export default class Avatar{
 
     move(){
 
-        if(this.active){
+        if(this.active && !(this.attached)){
 
             this.control.moveForward(this.fb_motion * this.speed);
             this.control.moveRight(this.lr_motion * this.speed);
@@ -281,6 +282,21 @@ export default class Avatar{
 
     toggle_texture(){
         this.mesh.material = this.texture.toggle();
+    }
+
+    attach(object){
+
+        this.mesh.position.set(0,0,0);
+        this.mesh.parent.remove(this.mesh);
+        object.mesh.add(this.mesh);
+        this.attached = true;
+
+    }
+
+    dettach(scene){
+        this.mesh.parent.remove(this.mesh);
+        scene.add(this.mesh);
+        this.attached = false;
     }
 
 }

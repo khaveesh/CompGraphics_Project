@@ -2,10 +2,11 @@ import NPC from "./NPC.js";
 import Avatar from "./Avatar.js";
 import Drone from "./Drone.js";
 import Lamppost from "./Objects/Lamppost.js";
-import Leader from "./Leader.js";
+import Mobile_NPC from "./Mobile_NPC.js";
 import * as THREE from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import { Mesh } from "three";
+import Train from "./Train.js";
 
 export default class Application{
 
@@ -17,7 +18,8 @@ export default class Application{
         this.drone = new Drone();
         this.debug_camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
         
-        this.objects = []
+        this.objects = [];
+		this.moving_objects = [];
         this.players = [this.avatar, this.drone];
         this.active_player = 1;
 
@@ -50,7 +52,7 @@ animate()
 	this.renderer.render( this.scene, this.players[this.active_player].camera);
 
 	this.players[this.active_player].move();
-	this.leader.move();
+	this.moving_objects.forEach((x) => x.move());
 
     requestAnimationFrame( this.animate.bind(this));
 
@@ -66,17 +68,23 @@ animate()
             this.players[this.active_player].activate();
 
         }
-        if(event.key == "t"){
+        else if(event.key == "t"){
             this.avatar.toggle_texture();
             this.objects.forEach((x) => x.toggle_texture());
         }
-        if(event.key == "m"){
+        else if(event.key == "m"){
             this.avatar.toggle_map();
             this.objects.forEach((x) => x.toggle_map());
         }
-        if(event.key == " "){
+        else if(event.key == " "){
             this.avatar.jump();
         }
+		else if(event.key == "1"){
+			this.avatar.attach(this.moving_objects[0].leader);
+		}
+		else if(event.key == "0"){
+			this.avatar.dettach(this.scene);
+		}
         
         
     }
@@ -107,8 +115,8 @@ animate()
         const floor_geometry = new THREE.PlaneGeometry(100,100);
         const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        // this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
-        // this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
+        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
+        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
 
         this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"ground.jpg"));
         
@@ -124,43 +132,49 @@ animate()
 
         this.scene.add(this.drone.mesh);
 
-		this.leader = new Leader(this.scene);
-		
-
-		const Path = new THREE.CurvePath();
-		Path.name = "Path";
+		const path = new THREE.CurvePath();
 		const firstLine = new THREE.LineCurve3(
-			new THREE.Vector3( 1, 0, 0 ),
-			new THREE.Vector3( -1, 0, 0 )
+			new THREE.Vector3( 10, 0.5, 0 ),
+			new THREE.Vector3( -10, 0.5, 0 )
 		);
 		const secondLine = new THREE.LineCurve3(
-			new THREE.Vector3(-1, 0, 0 ),
-			new THREE.Vector3( -1, 1, 0 )
+			new THREE.Vector3(-10, 0.5, 0 ),
+			new THREE.Vector3( -10, 0.5, 20 )
 		);
 	  
 		const thirdLine = new THREE.LineCurve3(
-			new THREE.Vector3( -1, 1, 0 ),
-			new THREE.Vector3(-1, 1, 1 ),
+			new THREE.Vector3( -10, 0.5, 20 ),
+			new THREE.Vector3(10, 0.5, 20 ),
+		);
+
+		const fourthLine = new THREE.LineCurve3(
+			new THREE.Vector3( 10, 0.5, 20 ),
+			new THREE.Vector3(10, 0.5, 0 ),
 		);
 	  
 
 		const bezierLine = new THREE.CubicBezierCurve3(
-			new THREE.Vector3( -1, 1, 1 ),
-			new THREE.Vector3( -0.5, 1.5, 0 ),
-			new THREE.Vector3( 2.0, 1.5, 0 ),
-			new THREE.Vector3( -1, 0, 1 )
+			new THREE.Vector3( 10, 0.5, 20 ),
+			new THREE.Vector3( 20, 0.5, 0 ),
+			new THREE.Vector3( 20, 0.5, 0 ),
+			new THREE.Vector3( 10, 0.5, 0 )
 		);
 		
-		Path.add(firstLine);
-		Path.add(secondLine);
-		Path.add(thirdLine);
-		Path.add(bezierLine);
+		path.add(firstLine);
+		path.add(secondLine);
+		path.add(thirdLine);
+		path.add(bezierLine);
+
+		this.moving_objects.push(new Train(3,this.scene, path));
+		
+
+		
 		
 		
 		const p_material = new THREE.LineBasicMaterial({
 		color: 0xffffff
 		});
-		const points = Path.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
+		const points = path.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
 	  
 		const p_geometry = new THREE.BufferGeometry().setFromPoints( points );
 		const draw_path = new THREE.Line(p_geometry, p_material);

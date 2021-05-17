@@ -10,20 +10,19 @@ export default class Lamppost extends NPC{
         const lights = [];
 
         for(var i = 0; i < 4; i++){
-            lights.push(new THREE.PointLight( 0xffff00, 0.5, 10 ));
+            lights.push(new THREE.PointLight( 0xffff00, 1, 10 ));
 
             
-            lights[lights.length - 1].position.y =  + 1.5;
+            lights[i].position.y =  + 1.5;
             
+            lights[i].position.x = -20;
+            lights[i].position.z = 20;
 
         }
         
-        lights[0].position.x = + 1;
-        lights[1].position.z = + 1;
-        lights[2].position.x = - 1;
-        lights[3].position.z = - 1;
+        
 
-        super(scene,"pole.obj", position, [Math.PI/2,0,0],1, lights, "white_concrete.jpg");
+        super(scene,"lamppost.obj", position, [0,0,0],0.08, lights, "white_concrete.jpg");
 
         this.light = lights;
     }
