@@ -165,7 +165,7 @@ animate()
 		path.add(thirdLine);
 		path.add(bezierLine);
 
-		this.moving_objects.push(new Train(3,this.scene, path));
+		this.moving_objects.push(new Train(3,this.scene, path, 0.1));
 		
 
 		

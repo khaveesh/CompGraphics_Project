@@ -285,8 +285,9 @@ export default class Avatar{
     }
 
     attach(object){
-
-        this.mesh.position.set(0,0,0);
+        object.mesh.geometry.computeBoundingBox();
+        this.floor = object.mesh.geometry.boundingBox.max.y + 0.5;
+        this.mesh.position.set(0,this.floor,0);
         this.mesh.parent.remove(this.mesh);
         object.mesh.add(this.mesh);
         this.attached = true;
@@ -296,6 +297,7 @@ export default class Avatar{
     dettach(scene){
         this.mesh.parent.remove(this.mesh);
         scene.add(this.mesh);
+        this.floor = 0.5;
         this.attached = false;
     }
 

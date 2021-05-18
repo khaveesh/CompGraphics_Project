@@ -15,7 +15,13 @@ export default class NPC{
                 this.geometry = object.children[0].geometry;
                 console.log(rotate);
                 this.initialize_mesh( position, rotate, scale);
-                parent.add(this.mesh);
+                
+                if(parent.add != null){
+                    parent.add(this.mesh);
+                }
+                else if(parent.mesh != null){
+                    parent.mesh.add(this.mesh);
+                }
             }
         );
 
@@ -41,6 +47,7 @@ export default class NPC{
         this.mesh.scale.set(scale,scale,scale);
         this.map_simple();
         this.children.forEach((x) => this.mesh.add(x));
+        console.log(this.children);
 
     }
 
@@ -191,4 +198,5 @@ export default class NPC{
         }
 
     }
+
 }
