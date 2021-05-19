@@ -130,7 +130,7 @@ animate()
 
 
 
-        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"ground.jpg","white_concrete.jpg"));
+        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"grass.jpg","white_concrete.jpg"));
         
         
         this.objects.push(new Lamppost(this.scene, [12,1.5,8]));
