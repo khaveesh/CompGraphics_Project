@@ -79,6 +79,12 @@ animate()
         else if(event.key == " "){
             this.avatar.jump();
         }
+        else if(event.key == "3"){
+            this.avatar.attach(this.moving_objects[2].objects[0]);
+        }
+        else if(event.key == "2"){
+            this.avatar.attach(this.moving_objects[1].leader);
+        }
 		else if(event.key == "1"){
 			this.avatar.attach(this.moving_objects[0].leader);
 		}
@@ -91,7 +97,7 @@ animate()
 
     keydown_handler(event){
         
-        if(["w","a","s","d","q","e"].includes(event.key)){
+        if(["w","a","s","d","q","e","x","z","r"].includes(event.key)){
             this.players[this.active_player].keydown(event.key);
         }
         
@@ -115,18 +121,24 @@ animate()
         const floor_geometry = new THREE.PlaneGeometry(100,100);
         const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
-        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,0]));
-        this.objects.push(new NPC(this.scene, "cube.obj", [0,0.5,5]));
+        this.objects.push(new NPC(this.scene, "cylinder.obj", [10,1,-10],[0,0,0],1,[], "panaroma2.jpg"));
+        this.objects.push(new NPC(this.scene, "sphere.obj", [12,0.5,-12],[0,0,0],1,[], "world.jpg"));
+        this.objects.push(new NPC(this.scene, "smoothsphere.obj", [15,1,-15],[0,0,0],1,[], "world.jpg"));
+        this.objects.push(new NPC(this.scene, "cube.obj", [20,1,-20],[0,0,0],1,[]));
 
-        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"ground.jpg"));
+        this.objects.push(new NPC(this.scene, "house1.obj", [70,5,-20],[0,Math.PI,0],5,[]));
+
+
+
+        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"ground.jpg","white_concrete.jpg"));
         
         
-        this.objects.push(new Lamppost(this.scene, [10,1.5,10]));
-        this.objects.push(new Lamppost(this.scene, [30,1.5,30]));
-        this.objects.push(new Lamppost(this.scene, [50,1.5,50]));
-        this.objects.push(new Lamppost(this.scene, [-10,1.5,-10]));
-        this.objects.push(new Lamppost(this.scene, [-30,1.5,-30]));
-        this.objects.push(new Lamppost(this.scene, [-50,1.5,-50]));
+        this.objects.push(new Lamppost(this.scene, [12,1.5,8]));
+        this.objects.push(new Lamppost(this.scene, [32,1.5,28]));
+        this.objects.push(new Lamppost(this.scene, [52,1.5,48]));
+        this.objects.push(new Lamppost(this.scene, [-8,1.5,-12]));
+        this.objects.push(new Lamppost(this.scene, [-28,1.5,-32]));
+        this.objects.push(new Lamppost(this.scene, [-48,1.5,-52]));
 
 
 
@@ -165,20 +177,50 @@ animate()
 		path.add(thirdLine);
 		path.add(bezierLine);
 
-		this.moving_objects.push(new Train(3,this.scene, path, 0.1));
+		this.moving_objects.push(new Train(3,this.scene, path, 0.03));
+
+        const path2 = new THREE.CurvePath();
+		const firstLine2 = new THREE.LineCurve3(
+			new THREE.Vector3( -70, 0.5, -70 ),
+			new THREE.Vector3( 70, 0.5, 70 )
+		);
+
+        path2.add(firstLine2);
+        this.moving_objects.push(new Train(4,this.scene, path2, 0.01));
+
+        const path3 = new THREE.CurvePath();
+		const bezierLine3 = new THREE.CubicBezierCurve3(
+			new THREE.Vector3( -90, 0.5, -90 ),
+			new THREE.Vector3( 90, 0.5, -90 ),
+			new THREE.Vector3( -90, 0.5, 90 ),
+			new THREE.Vector3( 90, 0.5, 90 )
+		);
+
+        const bezierLine32 = new THREE.CubicBezierCurve3(
+			new THREE.Vector3( 90, 0.5, 90 ),
+			new THREE.Vector3( 90, 0.5, -90 ),
+			new THREE.Vector3( -90, 0.5, 90 ),
+			new THREE.Vector3( -90, 0.5, -90 )
+		);
+
+        path3.add(bezierLine3);
+        path3.add(bezierLine32);
+        this.moving_objects.push(new Train(2,this.scene, path3, 0.005));
+
+
 		
 
 		
 		
 		
-		const p_material = new THREE.LineBasicMaterial({
-		color: 0xffffff
-		});
-		const points = path.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
+		// const p_material = new THREE.LineBasicMaterial({
+		// color: 0xffffff
+		// });
+		// const points = path.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
 	  
-		const p_geometry = new THREE.BufferGeometry().setFromPoints( points );
-		const draw_path = new THREE.Line(p_geometry, p_material);
-		this.scene.add(draw_path);
+		// const p_geometry = new THREE.BufferGeometry().setFromPoints( points );
+		// const draw_path = new THREE.Line(p_geometry, p_material);
+		// this.scene.add(draw_path);
 		
     }
 

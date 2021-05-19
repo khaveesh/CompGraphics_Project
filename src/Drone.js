@@ -49,11 +49,11 @@ export default class Drone{
 
     keydown(key){
 
-        if(key === "w"){
-            this.fb_motion = 1;
+        if(key === "w" && this.fb_motion < 5){
+            this.fb_motion += 0.5;
         }
-        else if(key === "s"){
-            this.fb_motion = -1;
+        else if(key === "s" && this.fb_motion > -5){
+            this.fb_motion += -0.5;
         }
         else if(key === "a"){
             this.lr_rotation = -1;
@@ -67,16 +67,25 @@ export default class Drone{
         else if(key === "e"){
             this.ud_motion = -1;
         }
+        else if(key === "z"){
+            this.camera.rotateX(Math.PI/6);
+        }
+        else if(key === "x"){
+            this.camera.rotateX(-Math.PI/6);
+        }
+        else if(key === "r"){
+            this.fb_motion = 0;
+        }
         
 
     }
 
     keyup(key){
 
-        if(key === "w" || key === "s"){
-            this.fb_motion = 0;
-        }
-        else if(key === "a" || key === "d"){
+        // if(key === "w" || key === "s"){
+        //     this.fb_motion = 0;
+        // }
+        if(key === "a" || key === "d"){
             this.lr_rotation = 0;
         }
         else if(key === "q" || key === "e"){

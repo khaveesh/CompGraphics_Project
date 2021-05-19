@@ -47,7 +47,8 @@ export default class Mobile_NPC extends NPC{
 
     add_moving_children(moving_children){
         this.moving_children = this.moving_children.concat(moving_children);
-        console.log("moving", moving_children);
+        // console.log("moving", moving_children);
     }
+
 
 }
