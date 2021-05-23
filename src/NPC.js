@@ -8,12 +8,10 @@ export default class NPC{
     constructor(parent , obj_file = "cube.obj", position = [0,0,0], rotate = [0,0,0], scale = 1, children = [], texture_file1 = "wall1.jpg", texture_file2 = "wood.jpg"){
 
         const loader = new OBJLoader();
-        console.log(obj_file);
         const mesh = require('./Resources/Meshes/' + obj_file);
         loader.load(mesh.default,  (object) => {
 
                 this.geometry = object.children[0].geometry;
-                console.log(rotate);
                 this.initialize_mesh( position, rotate, scale);
                 
                 if(parent.add != null){
@@ -320,3 +318,5 @@ export default class NPC{
     }
 
 }
+
+

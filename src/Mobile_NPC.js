@@ -10,7 +10,7 @@ export default class Mobile_NPC extends NPC{
 
         this.path = path;
         this.moving_children = [];
-        console.log(this.path);
+
 
         this.displacement = displacement;
         
@@ -41,13 +41,13 @@ export default class Mobile_NPC extends NPC{
             this.displacement = 0;
         }
 
-        this.moving_children.forEach((x) => {if(x.move != null) x.move();})
+        this.moving_children.forEach((x) => {if(x.move != null) x.move();});
 
     }
 
     add_moving_children(moving_children){
         this.moving_children = this.moving_children.concat(moving_children);
-        // console.log("moving", moving_children);
+
     }
 
 

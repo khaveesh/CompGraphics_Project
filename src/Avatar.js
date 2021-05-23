@@ -3,7 +3,7 @@ import Texture from "./Texture.js";
 
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
-import { BoxGeometry, BufferAttribute } from 'three';
+import { BufferAttribute } from 'three';
 
 
 
@@ -300,5 +300,23 @@ export default class Avatar{
         this.floor = 0.5;
         this.attached = false;
     }
+
+    collision_detection(objects) {
+    
+        this.mesh.geometry.computeBoundingBox();
+        this.mesh.geometry.boundingBox.max.add(this.mesh.position);
+        this.mesh.geometry.boundingBox.min.add(this.mesh.position);
+        objects.forEach((o) => {
+          o.mesh.geometry.computeBoundingBox();
+          if (
+            o.mesh.geometry.boundingBox.applyMatrix4(o.mesh.matrixWorld)
+              .intersectsBox(
+                this.mesh.geometry.boundingBox,
+              )
+          ) {
+            console.log("Collision Detected");
+          }
+        });
+      }
 
 }

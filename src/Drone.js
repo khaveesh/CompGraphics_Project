@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { Vector3 } from 'three';
-import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
+
 
 
 export default class Drone{
@@ -82,9 +81,7 @@ export default class Drone{
 
     keyup(key){
 
-        // if(key === "w" || key === "s"){
-        //     this.fb_motion = 0;
-        // }
+
         if(key === "a" || key === "d"){
             this.lr_rotation = 0;
         }

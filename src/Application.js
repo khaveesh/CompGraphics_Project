@@ -2,10 +2,7 @@ import NPC from "./NPC.js";
 import Avatar from "./Avatar.js";
 import Drone from "./Drone.js";
 import Lamppost from "./Objects/Lamppost.js";
-import Mobile_NPC from "./Mobile_NPC.js";
 import * as THREE from 'three';
-import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
-import { Mesh } from "three";
 import Train from "./Train.js";
 
 export default class Application{
@@ -25,7 +22,7 @@ export default class Application{
 
         this.initialize_scene();
 
-        const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+        const light = new THREE.AmbientLight( 0x404040 ); 
         this.scene.add( light );
 
         
@@ -53,6 +50,10 @@ animate()
 
 	this.players[this.active_player].move();
 	this.moving_objects.forEach((x) => x.move());
+
+    if (this.active_player === 0) {
+        this.avatar.collision_detection(this.objects);
+    }
 
     requestAnimationFrame( this.animate.bind(this));
 
@@ -115,11 +116,6 @@ animate()
 
     initialize_scene(){
 
-        const box_geometry = new THREE.BoxGeometry();
-        const green_phong_material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
-
-        const floor_geometry = new THREE.PlaneGeometry(100,100);
-        const white_phong_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
         
         this.objects.push(new NPC(this.scene, "cylinder.obj", [10,1,-10],[0,0,0],1,[], "panaroma2.jpg"));
         this.objects.push(new NPC(this.scene, "sphere.obj", [12,0.5,-12],[0,0,0],1,[], "world.jpg"));
@@ -130,7 +126,7 @@ animate()
 
 
 
-        this.objects.push(new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"grass.jpg","white_concrete.jpg"));
+        this.ground = new NPC(this.scene, "plane.obj", [0,0,0], [0,0,0],1,[],"grass.jpg","white_concrete.jpg");
         
         
         this.objects.push(new Lamppost(this.scene, [12,1.5,8]));
@@ -207,20 +203,6 @@ animate()
         path3.add(bezierLine32);
         this.moving_objects.push(new Train(2,this.scene, path3, 0.005));
 
-
-		
-
-		
-		
-		
-		// const p_material = new THREE.LineBasicMaterial({
-		// color: 0xffffff
-		// });
-		// const points = path.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
-	  
-		// const p_geometry = new THREE.BufferGeometry().setFromPoints( points );
-		// const draw_path = new THREE.Line(p_geometry, p_material);
-		// this.scene.add(draw_path);
 		
     }
 

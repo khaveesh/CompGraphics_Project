@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 
 import NPC from "./NPC.js";
 
