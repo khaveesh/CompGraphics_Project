@@ -41,4 +41,10 @@ export default class Train{
 
     }
 
+    getGeometry(){
+        const g=[ this.leader.mesh ]
+        this.objects.forEach(o => g.push(o.mesh))
+        return g
+    }
+
 }

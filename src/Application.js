@@ -30,7 +30,7 @@ export default class Application {
     const spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(60, 10, -60);
     spotLight.target = this.drone.mesh;
-    spotLight.angle = Math.PI/60;
+    spotLight.angle = Math.PI / 60;
     this.scene.add(spotLight);
 
     this.scene.add(light);
@@ -40,7 +40,6 @@ export default class Application {
     this.debug_camera.position.x = 70;
 
     this.debug_camera.rotateY(Math.PI);
-
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
@@ -71,7 +70,7 @@ export default class Application {
     this.moving_objects.forEach((x) => x.move());
 
     if (this.active_player === 0) {
-      this.avatar.collision_detection(this.objects);
+      this.avatar.collision_detection(this.objects, this.moving_objects);
     }
 
     requestAnimationFrame(this.animate.bind(this));
@@ -173,7 +172,7 @@ export default class Application {
       "white_concrete.jpg",
     );
 
-    this.objects.push(new NPC(this.scene, "lighthouse.obj", [60,0,-60]));
+    this.objects.push(new NPC(this.scene, "lighthouse.obj", [60, 0, -60]));
 
     this.objects.push(new Lamppost(this.scene, [12, 1.5, 8]));
     this.objects.push(new Lamppost(this.scene, [32, 1.5, 28]));
