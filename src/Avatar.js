@@ -42,7 +42,7 @@ export default class Avatar{
 
         this.map = 0;
         
-        this.speed = 0.05;
+        this.speed = 0.3;
         this.y_velocity = 0.5;
         
     }
